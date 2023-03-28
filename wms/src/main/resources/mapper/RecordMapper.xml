@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lyjava.wms.mapper.RecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.lyjava.wms.pojo.Record">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="goodsId" column="goods_id" jdbcType="INTEGER"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="adminId" column="admin_id" jdbcType="INTEGER"/>
+            <result property="count" column="count" jdbcType="INTEGER"/>
+            <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,goods_id,user_id,
+        admin_id,count,createtime,
+        remark
+    </sql>
+    <!--sql语句中建议不要写注释，有可能会报错-->
+    <select id="pageRes" resultType="com.lyjava.wms.pojo.RecordRes">
+        select
+            r.*,g.name goods_name,s.name storage_name,gt.name goodstype_name,
+            (select u.name from t_user u where u.id=r.user_id) user_name,
+            (select u.name from t_user u where u.id=r.admin_id) admin_name
+        from t_record r
+            join t_goods g on r.goods_id=g.id
+            join t_storage s on g.storage=s.id
+            join t_goodstype gt on g.goodsType=gt.id  ${ew.customSqlSegment}
+    </select>
+</mapper>
